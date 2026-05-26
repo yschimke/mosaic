@@ -629,7 +629,17 @@ public final class com/jakewharton/mosaic/ui/Bitmap$Companion {
 }
 
 public final class com/jakewharton/mosaic/ui/Image {
-	public static final fun Image (Lcom/jakewharton/mosaic/ui/Bitmap;IILcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Image (Lcom/jakewharton/mosaic/ui/Bitmap;IILcom/jakewharton/mosaic/modifier/Modifier;Lcom/jakewharton/mosaic/ui/ImageRenderMode;Landroidx/compose/runtime/Composer;II)V
+	public static final fun detectImageRenderMode ()Lcom/jakewharton/mosaic/ui/ImageRenderMode;
+}
+
+public final class com/jakewharton/mosaic/ui/ImageRenderMode : java/lang/Enum {
+	public static final field Ascii Lcom/jakewharton/mosaic/ui/ImageRenderMode;
+	public static final field HalfBlock Lcom/jakewharton/mosaic/ui/ImageRenderMode;
+	public static final field KittyGraphics Lcom/jakewharton/mosaic/ui/ImageRenderMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/jakewharton/mosaic/ui/ImageRenderMode;
+	public static fun values ()[Lcom/jakewharton/mosaic/ui/ImageRenderMode;
 }
 
 public final class com/jakewharton/mosaic/ui/RawText {
