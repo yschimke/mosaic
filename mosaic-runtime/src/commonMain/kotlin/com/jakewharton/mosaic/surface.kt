@@ -66,6 +66,28 @@ internal class TextSurface(
 		for (columnIndex in rowStart until rowStop) {
 			val pixel = cells[columnIndex]
 
+			// Continuation cells are width reserved by a previous payload pixel — emit nothing
+			// and don't touch the SGR state machine.
+			if (pixel.payloadContinuation) continue
+
+			val pixelPayload = pixel.payload
+			if (pixelPayload != null) {
+				// A payload pixel emits its blob verbatim. Reset SGR before and after so that
+				// neither the surrounding row state nor any state set inside the payload leaks.
+				if (ansiLevel != AnsiLevel.NONE) {
+					appendable.append(ansiReset)
+					appendable.append(ansiClosingCharacter)
+				}
+				appendable.append(pixelPayload)
+				if (ansiLevel != AnsiLevel.NONE) {
+					appendable.append(ansiReset)
+					appendable.append(ansiClosingCharacter)
+				}
+				// Force the next non-payload pixel to re-emit its full SGR state.
+				lastPixel = blankPixel
+				continue
+			}
+
 			if (ansiLevel != AnsiLevel.NONE) {
 				if (pixel.foreground != lastPixel.foreground) {
 					attributes.addColor(
@@ -211,7 +233,24 @@ internal class TextPixel(var codePoint: Int) {
 	var underlineStyle: UnderlineStyle = UnderlineStyle.Unspecified
 	var underlineColor: Color = Color.Unspecified
 
+	/**
+	 * Optional opaque output blob that, when non-null, is emitted verbatim during rendering
+	 * in place of [codePoint]. Used by `RawText` / `drawRaw` to embed strings that contain
+	 * escape sequences whose byte length does not match their visible cell width — sixel /
+	 * Kitty / iTerm2 graphics envelopes, or pre-encoded SGR-coloured half-block image rows.
+	 *
+	 * Companion cells covered by a single payload have [payloadContinuation] = true so that
+	 * row rendering knows to skip them entirely (no codepoint, no SGR reset, no padding).
+	 */
+	var payload: String? = null
+
+	/**
+	 * True for cells claimed as width by a leading [payload] pixel. Skipped during render.
+	 */
+	var payloadContinuation: Boolean = false
+
 	fun isEmpty(): Boolean {
+		if (payload != null || payloadContinuation) return false
 		return codePoint == SpaceCharCodePoint &&
 			background.isUnspecifiedColor &&
 			foreground.isUnspecifiedColor &&
@@ -222,7 +261,13 @@ internal class TextPixel(var codePoint: Int) {
 
 	override fun toString() = buildString {
 		append("TextPixel(\"")
-		appendCodePoint(codePoint)
+		if (payloadContinuation) {
+			append("∎") // continuation of a preceding payload cell
+		} else if (payload != null) {
+			append("⏵") // payload start; bytes elided
+		} else {
+			appendCodePoint(codePoint)
+		}
 		append("\"")
 		if (background.isSpecifiedColor) {
 			append(" bg=")

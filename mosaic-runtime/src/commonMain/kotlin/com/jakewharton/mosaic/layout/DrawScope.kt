@@ -114,6 +114,27 @@ public interface DrawScope {
 	)
 
 	/**
+	 * Emit [content] verbatim at ([row], [column]), reserving [displayWidth] cells for it
+	 * regardless of [content]'s string length.
+	 *
+	 * Use this when the byte content contains escape sequences (image protocols like sixel /
+	 * Kitty graphics / iTerm2, or hand-rolled SGR-coloured half-block image rows) that do not
+	 * count toward the visible cell width. Mosaic's normal text path would mis-measure such
+	 * content because it advances one cell per code point.
+	 *
+	 * Each call paints a single row spanning [displayWidth] cells: the leading cell carries
+	 * the entire [content] as a payload, and the trailing `displayWidth - 1` cells are marked
+	 * as payload continuations so they emit nothing. The renderer issues an SGR reset on both
+	 * sides of [content] so its internal styling does not leak.
+	 */
+	public fun drawRaw(
+		row: Int,
+		column: Int,
+		displayWidth: Int,
+		content: String,
+	)
+
+	/**
 	 * Helper method to offset the provided size with the offset in box width and height
 	 */
 	private fun IntSize.offsetSize(offset: IntOffset): IntSize = IntSize(this.width - offset.x, this.height - offset.y)
@@ -255,6 +276,42 @@ internal open class TextCanvasDrawScope(
 		}
 	}
 
+	override fun drawRaw(
+		row: Int,
+		column: Int,
+		displayWidth: Int,
+		content: String,
+	) {
+		require(displayWidth >= 1) { "displayWidth must be >= 1, was $displayWidth" }
+		if (row < 0 || row >= height || column >= width) return
+		val startColumn = maxOf(column, 0)
+		val endColumn = minOf(column + displayWidth, width)
+		if (endColumn <= startColumn) return
+
+		// Clear the leading pixel so a stale codePoint / colours from a previous frame don't
+		// leak through alongside the payload. The continuation cells likewise get nulled so
+		// they emit nothing.
+		clearForRaw(canvas[row, startColumn]).apply {
+			payload = content
+			payloadContinuation = false
+		}
+		for (c in startColumn + 1 until endColumn) {
+			clearForRaw(canvas[row, c]).apply {
+				payload = null
+				payloadContinuation = true
+			}
+		}
+	}
+
+	private inline fun clearForRaw(pixel: TextPixel): TextPixel = pixel.apply {
+		codePoint = UnspecifiedCodePoint
+		foreground = Color.Unspecified
+		background = Color.Unspecified
+		textStyle = TextStyle.Empty
+		underlineStyle = UnderlineStyle.Unspecified
+		underlineColor = Color.Unspecified
+	}
+
 	private fun drawText(
 		row: Int,
 		column: Int,
@@ -307,6 +364,13 @@ internal open class TextCanvasDrawScope(
 		underlineStyle: UnderlineStyle,
 		underlineColor: Color,
 	) {
+		// A subsequent regular draw at this cell beats any previously set payload — the new
+		// writer is on top in z-order, so clear the payload state to let normal SGR/codepoint
+		// logic take over.
+		if (payload != null || payloadContinuation) {
+			payload = null
+			payloadContinuation = false
+		}
 		if (codePoint.isSpecifiedCodePoint) {
 			this.codePoint = codePoint
 		}

@@ -1,0 +1,44 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+
+// Pure-JVM module. Drives an already-built Mosaic sample binary inside real terminal emulators
+// (kitty, ghostty) hosted on a virtual X server (Xvnc) and screenshots them with `import`. The
+// tests are JUnit-`assume`'d on the presence of each binary so an environment that doesn't have
+// the harness installed reports SKIP, not FAIL.
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	testImplementation libs.kotlin.test
+	testImplementation libs.kotlin.test.junit
+	testImplementation libs.junit4
+}
+
+def sampleInstallDir = project(':samples:rawimage')
+	.layout.buildDirectory.dir('install/rawimage-jvm')
+
+test {
+	useJUnit()
+	systemProperty 'mosaic.e2e.sampleDir', sampleInstallDir.get().asFile.absolutePath
+	systemProperty 'mosaic.e2e.screenshotDir',
+		layout.buildDirectory.dir('e2e-screenshots').get().asFile.absolutePath
+	dependsOn ':samples:rawimage:installJvmDist'
+}
+
+// Convenience task aggregating the binary dependencies a developer needs locally to actually
+// run the harness (vs. assume-skip).
+tasks.register('checkE2EBinaries') {
+	doLast {
+		def required = ['Xvnc', 'kitty', 'ghostty', 'xdotool', 'import']
+		def missing = required.findAll { name ->
+			def p = new ProcessBuilder('sh', '-c', "command -v $name >/dev/null 2>&1").start()
+			p.waitFor() != 0
+		}
+		if (missing) {
+			println "Missing binaries (tests will SKIP locally): ${missing.join(', ')}"
+		} else {
+			println "All E2E binaries present."
+		}
+	}
+}

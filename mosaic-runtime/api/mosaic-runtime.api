@@ -85,6 +85,7 @@ public final class com/jakewharton/mosaic/layout/DrawModifierKt {
 }
 
 public abstract interface class com/jakewharton/mosaic/layout/DrawScope {
+	public abstract fun drawRaw (IIILjava/lang/String;)V
 	public abstract fun drawRect-K-Y9Gx4 (CIIIJJLcom/jakewharton/mosaic/layout/DrawStyle;)V
 	public abstract fun drawRect-K-Y9Gx4 (IIIIJJLcom/jakewharton/mosaic/layout/DrawStyle;)V
 	public static synthetic fun drawRect-K-Y9Gx4$default (Lcom/jakewharton/mosaic/layout/DrawScope;CIIIJJLcom/jakewharton/mosaic/layout/DrawStyle;ILjava/lang/Object;)V
@@ -612,6 +613,11 @@ public abstract interface class com/jakewharton/mosaic/ui/RowScope {
 
 public final class com/jakewharton/mosaic/ui/SpacerKt {
 	public static final fun Spacer (Lcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/jakewharton/mosaic/ui/RawText {
+	public static final fun RawText (Ljava/lang/String;ILcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
+	public static final fun RawText (Ljava/util/List;ILcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/jakewharton/mosaic/ui/Text {
