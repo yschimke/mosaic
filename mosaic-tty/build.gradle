@@ -44,11 +44,21 @@ def zigDownload = tasks.register('zigDownload', ZigDownloadTask) {
 	outputDir = layout.buildDirectory.dir('zig')
 }
 
+// Pin the jextract toolchain to JDK 22: the Tty.kt bindings call
+// `MosaicIoResult.error(seg)` / `count(seg)`, the simplified accessor names jextract
+// started emitting in JDK 22+. The default (JDK 21) emits the older `error$get` /
+// `count$get` accessors and won't compile against this code.
+jextract.installation.javaLanguageVersion = org.gradle.jvm.toolchain.JavaLanguageVersion.of(22)
+
 jextract.libraries.register('mosaic') {
 	header = file('src/commonMain/c/mosaic.h')
 	includes.add(layout.projectDirectory.dir('src/commonMain/c'))
 	headerClassName = 'Libmosaic'
 	targetPackage = 'com.jakewharton.mosaic.tty'
+	// jextract generates .class files by default; the Kotlin compilation here picks them
+	// up via `defaultSourceSet.kotlin.srcDir(mosaicJextractGenerateBindings)` which needs
+	// .java sources, not bytecode.
+	generateSourceFiles = true
 }
 
 kotlin {
