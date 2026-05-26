@@ -629,7 +629,7 @@ public final class com/jakewharton/mosaic/ui/Bitmap$Companion {
 }
 
 public final class com/jakewharton/mosaic/ui/Image {
-	public static final fun Image (Lcom/jakewharton/mosaic/ui/Bitmap;Lcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Image (Lcom/jakewharton/mosaic/ui/Bitmap;IILcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/jakewharton/mosaic/ui/RawText {
