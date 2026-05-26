@@ -429,6 +429,20 @@ final class com.jakewharton.mosaic.ui/Bitmap { // com.jakewharton.mosaic.ui/Bitm
     }
 }
 
+final class com.jakewharton.mosaic.ui/TextFieldValue { // com.jakewharton.mosaic.ui/TextFieldValue|null[0]
+    constructor <init>(kotlin/String, kotlin/Int = ...) // com.jakewharton.mosaic.ui/TextFieldValue.<init>|<init>(kotlin.String;kotlin.Int){}[0]
+
+    final val cursor // com.jakewharton.mosaic.ui/TextFieldValue.cursor|{}cursor[0]
+        final fun <get-cursor>(): kotlin/Int // com.jakewharton.mosaic.ui/TextFieldValue.cursor.<get-cursor>|<get-cursor>(){}[0]
+    final val text // com.jakewharton.mosaic.ui/TextFieldValue.text|{}text[0]
+        final fun <get-text>(): kotlin/String // com.jakewharton.mosaic.ui/TextFieldValue.text.<get-text>|<get-text>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.jakewharton.mosaic.ui/TextFieldValue.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.jakewharton.mosaic.ui/TextFieldValue.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.jakewharton.mosaic.ui/TextFieldValue.toString|toString(){}[0]
+    final fun withText(kotlin/String): com.jakewharton.mosaic.ui/TextFieldValue // com.jakewharton.mosaic.ui/TextFieldValue.withText|withText(kotlin.String){}[0]
+}
+
 final class com.jakewharton.mosaic/StaticLogger { // com.jakewharton.mosaic/StaticLogger|null[0]
     final fun log(com.jakewharton.mosaic/TextCanvas) // com.jakewharton.mosaic/StaticLogger.log|log(com.jakewharton.mosaic.TextCanvas){}[0]
     final fun log(kotlin/String) // com.jakewharton.mosaic/StaticLogger.log|log(kotlin.String){}[0]
@@ -812,6 +826,7 @@ final fun com.jakewharton.mosaic.text/com_jakewharton_mosaic_text_SpanStyle$stab
 final fun com.jakewharton.mosaic.ui.unit/Constraints(kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ...): com.jakewharton.mosaic.ui.unit/Constraints // com.jakewharton.mosaic.ui.unit/Constraints|Constraints(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
 final fun com.jakewharton.mosaic.ui.unit/IntOffset(kotlin/Int, kotlin/Int): com.jakewharton.mosaic.ui.unit/IntOffset // com.jakewharton.mosaic.ui.unit/IntOffset|IntOffset(kotlin.Int;kotlin.Int){}[0]
 final fun com.jakewharton.mosaic.ui.unit/IntSize(kotlin/Int, kotlin/Int): com.jakewharton.mosaic.ui.unit/IntSize // com.jakewharton.mosaic.ui.unit/IntSize|IntSize(kotlin.Int;kotlin.Int){}[0]
+final fun com.jakewharton.mosaic.ui/BasicTextField(com.jakewharton.mosaic.ui/TextFieldValue, kotlin/Function1<com.jakewharton.mosaic.ui/TextFieldValue, kotlin/Unit>, com.jakewharton.mosaic.modifier/Modifier?, kotlin/Boolean, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.jakewharton.mosaic.ui/BasicTextField|BasicTextField(com.jakewharton.mosaic.ui.TextFieldValue;kotlin.Function1<com.jakewharton.mosaic.ui.TextFieldValue,kotlin.Unit>;com.jakewharton.mosaic.modifier.Modifier?;kotlin.Boolean;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
 final fun com.jakewharton.mosaic.ui/Box(com.jakewharton.mosaic.modifier/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.jakewharton.mosaic.ui/Box|Box(com.jakewharton.mosaic.modifier.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
 final fun com.jakewharton.mosaic.ui/Box(com.jakewharton.mosaic.modifier/Modifier?, com.jakewharton.mosaic.ui/Alignment?, kotlin/Boolean, kotlin/Function3<com.jakewharton.mosaic.ui/BoxScope, androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.jakewharton.mosaic.ui/Box|Box(com.jakewharton.mosaic.modifier.Modifier?;com.jakewharton.mosaic.ui.Alignment?;kotlin.Boolean;kotlin.Function3<com.jakewharton.mosaic.ui.BoxScope,androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
 final fun com.jakewharton.mosaic.ui/Color(kotlin/Float, kotlin/Float, kotlin/Float): com.jakewharton.mosaic.ui/Color // com.jakewharton.mosaic.ui/Color|Color(kotlin.Float;kotlin.Float;kotlin.Float){}[0]

@@ -657,9 +657,24 @@ public final class com/jakewharton/mosaic/ui/RawText {
 	public static final fun RawText (Ljava/util/List;ILcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
 }
 
+public final class com/jakewharton/mosaic/ui/BasicTextField {
+	public static final fun BasicTextField (Lcom/jakewharton/mosaic/ui/TextFieldValue;Lkotlin/jvm/functions/Function1;Lcom/jakewharton/mosaic/modifier/Modifier;ZLandroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/jakewharton/mosaic/ui/Text {
 	public static final fun Text-cbmis8g (Lcom/jakewharton/mosaic/text/AnnotatedString;Lcom/jakewharton/mosaic/modifier/Modifier;IIIIILandroidx/compose/runtime/Composer;II)V
 	public static final fun Text-cbmis8g (Ljava/lang/String;Lcom/jakewharton/mosaic/modifier/Modifier;IIIIILandroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/jakewharton/mosaic/ui/TextFieldValue {
+	public fun <init> (Ljava/lang/String;I)V
+	public synthetic fun <init> (Ljava/lang/String;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCursor ()I
+	public final fun getText ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun withText (Ljava/lang/String;)Lcom/jakewharton/mosaic/ui/TextFieldValue;
 }
 
 public final class com/jakewharton/mosaic/ui/TextStyle {
