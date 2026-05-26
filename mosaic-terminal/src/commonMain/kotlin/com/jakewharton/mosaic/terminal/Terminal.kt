@@ -121,6 +121,16 @@ public interface Terminal : AutoCloseable {
 		public val kittyUnderline: Boolean
 
 		/**
+		 * True when SGR-encoded mouse tracking (modes 1003 + 1006) is supported by this terminal.
+		 * When true, Mosaic enables tracking automatically and [MouseEvent]s flow through the
+		 * normal event channel. Disabled again on terminal teardown so the host shell isn't left
+		 * in tracking mode.
+		 *
+		 * See: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h2-Mouse-Tracking
+		 */
+		public val mouseEvents: Boolean
+
+		/**
 		 * True when synchronized output (mode 2026) is supported by this terminal. This ensures a set
 		 * of commands (usually output-related) are atomically reflected in the rendering. Without this,
 		 * updates may be partially rendered and cause a tearing effect.

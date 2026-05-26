@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import com.jakewharton.mosaic.Mosaic
 import com.jakewharton.mosaic.terminal.AnsiLevel
 import com.jakewharton.mosaic.terminal.KeyboardEvent
+import com.jakewharton.mosaic.terminal.MouseEvent
 import com.jakewharton.mosaic.terminal.Terminal
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
@@ -48,6 +49,13 @@ public interface TestMosaic<T> : Mosaic {
 	public suspend fun awaitSnapshot(duration: Duration = 1.seconds): T
 
 	public fun sendKeyEvent(keyEvent: KeyboardEvent)
+
+	/**
+	 * Inject a mouse event for the runtime to route through the node tree's hit-test path.
+	 * Coordinates are absolute terminal cells (0-based). Useful for asserting that a
+	 * `Modifier.onMouseEvent` handler fires when the event lands inside its composable's bounds.
+	 */
+	public fun sendMouseEvent(mouseEvent: MouseEvent)
 	public val state: TestTerminal.State
 }
 
@@ -103,6 +111,10 @@ private class RealTestMosaic<T>(
 
 	override fun sendKeyEvent(keyEvent: KeyboardEvent) {
 		testTerminal.events.trySend(keyEvent)
+	}
+
+	override fun sendMouseEvent(mouseEvent: MouseEvent) {
+		testTerminal.events.trySend(mouseEvent)
 	}
 
 	override fun draw() = mosaic.draw()

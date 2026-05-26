@@ -15,6 +15,7 @@ abstract interface <#A: kotlin/Any?> com.jakewharton.mosaic.testing/TestMosaic :
         abstract fun <get-state>(): com.jakewharton.mosaic.testing/TestTerminal.State // com.jakewharton.mosaic.testing/TestMosaic.state.<get-state>|<get-state>(){}[0]
 
     abstract fun sendKeyEvent(com.jakewharton.mosaic.terminal/KeyboardEvent) // com.jakewharton.mosaic.testing/TestMosaic.sendKeyEvent|sendKeyEvent(com.jakewharton.mosaic.terminal.KeyboardEvent){}[0]
+    abstract fun sendMouseEvent(com.jakewharton.mosaic.terminal/MouseEvent) // com.jakewharton.mosaic.testing/TestMosaic.sendMouseEvent|sendMouseEvent(com.jakewharton.mosaic.terminal.MouseEvent){}[0]
     abstract fun setContentAndSnapshot(kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>): #A // com.jakewharton.mosaic.testing/TestMosaic.setContentAndSnapshot|setContentAndSnapshot(kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>){}[0]
     abstract suspend fun awaitSnapshot(kotlin.time/Duration = ...): #A // com.jakewharton.mosaic.testing/TestMosaic.awaitSnapshot|awaitSnapshot(kotlin.time.Duration){}[0]
 }
@@ -36,7 +37,7 @@ final class com.jakewharton.mosaic.testing/TestTerminal : com.jakewharton.mosaic
     final fun close() // com.jakewharton.mosaic.testing/TestTerminal.close|close(){}[0]
 
     final class Capabilities : com.jakewharton.mosaic.terminal/Terminal.Capabilities { // com.jakewharton.mosaic.testing/TestTerminal.Capabilities|null[0]
-        constructor <init>(com.jakewharton.mosaic.terminal/AnsiLevel = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ...) // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.<init>|<init>(com.jakewharton.mosaic.terminal.AnsiLevel;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean){}[0]
+        constructor <init>(com.jakewharton.mosaic.terminal/AnsiLevel = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ...) // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.<init>|<init>(com.jakewharton.mosaic.terminal.AnsiLevel;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean){}[0]
 
         final val ansiLevel // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.ansiLevel|{}ansiLevel[0]
             final fun <get-ansiLevel>(): com.jakewharton.mosaic.terminal/AnsiLevel // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.ansiLevel.<get-ansiLevel>|<get-ansiLevel>(){}[0]
@@ -60,6 +61,8 @@ final class com.jakewharton.mosaic.testing/TestTerminal : com.jakewharton.mosaic
             final fun <get-kittyTextSizingWidth>(): kotlin/Boolean // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.kittyTextSizingWidth.<get-kittyTextSizingWidth>|<get-kittyTextSizingWidth>(){}[0]
         final val kittyUnderline // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.kittyUnderline|{}kittyUnderline[0]
             final fun <get-kittyUnderline>(): kotlin/Boolean // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.kittyUnderline.<get-kittyUnderline>|<get-kittyUnderline>(){}[0]
+        final val mouseEvents // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.mouseEvents|{}mouseEvents[0]
+            final fun <get-mouseEvents>(): kotlin/Boolean // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.mouseEvents.<get-mouseEvents>|<get-mouseEvents>(){}[0]
         final val synchronizedOutput // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.synchronizedOutput|{}synchronizedOutput[0]
             final fun <get-synchronizedOutput>(): kotlin/Boolean // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.synchronizedOutput.<get-synchronizedOutput>|<get-synchronizedOutput>(){}[0]
         final val themeEvents // com.jakewharton.mosaic.testing/TestTerminal.Capabilities.themeEvents|{}themeEvents[0]

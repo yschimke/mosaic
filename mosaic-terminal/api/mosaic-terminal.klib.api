@@ -66,6 +66,8 @@ abstract interface com.jakewharton.mosaic.terminal/Terminal : kotlin/AutoCloseab
             abstract fun <get-kittyTextSizingWidth>(): kotlin/Boolean // com.jakewharton.mosaic.terminal/Terminal.Capabilities.kittyTextSizingWidth.<get-kittyTextSizingWidth>|<get-kittyTextSizingWidth>(){}[0]
         abstract val kittyUnderline // com.jakewharton.mosaic.terminal/Terminal.Capabilities.kittyUnderline|{}kittyUnderline[0]
             abstract fun <get-kittyUnderline>(): kotlin/Boolean // com.jakewharton.mosaic.terminal/Terminal.Capabilities.kittyUnderline.<get-kittyUnderline>|<get-kittyUnderline>(){}[0]
+        abstract val mouseEvents // com.jakewharton.mosaic.terminal/Terminal.Capabilities.mouseEvents|{}mouseEvents[0]
+            abstract fun <get-mouseEvents>(): kotlin/Boolean // com.jakewharton.mosaic.terminal/Terminal.Capabilities.mouseEvents.<get-mouseEvents>|<get-mouseEvents>(){}[0]
         abstract val synchronizedOutput // com.jakewharton.mosaic.terminal/Terminal.Capabilities.synchronizedOutput|{}synchronizedOutput[0]
             abstract fun <get-synchronizedOutput>(): kotlin/Boolean // com.jakewharton.mosaic.terminal/Terminal.Capabilities.synchronizedOutput.<get-synchronizedOutput>|<get-synchronizedOutput>(){}[0]
         abstract val themeEvents // com.jakewharton.mosaic.terminal/Terminal.Capabilities.themeEvents|{}themeEvents[0]

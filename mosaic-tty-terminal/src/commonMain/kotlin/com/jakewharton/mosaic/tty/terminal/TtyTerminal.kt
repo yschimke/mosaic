@@ -65,6 +65,7 @@ private class TtyTerminal(
 		override val kittyTextSizingScale: Boolean,
 		override val kittyTextSizingWidth: Boolean,
 		override val kittyUnderline: Boolean,
+		override val mouseEvents: Boolean,
 		override val synchronizedOutput: Boolean,
 		override val themeEvents: Boolean,
 	) : Terminal.Capabilities
@@ -97,6 +98,7 @@ public suspend fun Tty.asTerminalIn(
 	var toggleCursor = false
 	var toggleFocus = false
 	var toggleInBandResize = false
+	var toggleMouse = false
 	var toggleSystemTheme = false
 
 	// TODO The design of finalization hook fights us here. We don't need suspension.
@@ -106,6 +108,7 @@ public suspend fun Tty.asTerminalIn(
 				setCallback(null)
 				if (toggleSystemTheme) write(systemThemeDisable)
 				if (toggleInBandResize) write(inBandResizeDisable)
+				if (toggleMouse) write(mouseDisable)
 				if (toggleFocus) write(focusDisable)
 				if (toggleCursor) write(cursorEnable)
 				reset()
@@ -137,6 +140,7 @@ public suspend fun Tty.asTerminalIn(
 	var kittyTextSizingCursorPositionCount = 0
 	var kittyTextSizingLastCursorPosition: CursorPositionEvent? = null
 	var kittyUnderlines = false
+	var mouseEvents = false
 	var synchronizedOutput = false
 	var terminalName: String? = null
 	var themeEvents = false
@@ -164,6 +168,7 @@ public suspend fun Tty.asTerminalIn(
 					write(
 						"$CSI?$cursorMode\$p" +
 							"$CSI?$focusMode\$p" +
+							"$CSI?$mouseSgrMode\$p" +
 							"$CSI?$synchronizedOutputMode\$p" +
 							"$CSI?$systemThemeMode\$p" +
 							"$CSI?$inBandResizeMode\$p" +
@@ -198,6 +203,19 @@ public suspend fun Tty.asTerminalIn(
 								// Enabling focus notification (even if already set) _might_ trigger an initial
 								// event. There is otherwise no explicit way to request the initial value.
 								write(focusEnable)
+							}
+						}
+
+						mouseSgrMode -> {
+							// 1006 (SGR mouse) is the capability probe; if the terminal recognises it we
+							// enable 1003 + 1006 together so any-event tracking arrives in SGR encoding.
+							// `canBeChanged` rules out "Permanent" which would be weird here (the mode is
+							// not normally on by default) but matches the conservative pattern used for
+							// the other modes — leave the host untouched if we can't safely flip it back.
+							if (event.setting.canBeChanged) {
+								mouseEvents = true
+								toggleMouse = event.setting == Setting.Reset
+								if (toggleMouse) write(mouseEnable)
 							}
 						}
 
@@ -364,6 +382,7 @@ public suspend fun Tty.asTerminalIn(
 			kittyTextSizingScale = kittyTextSizingScale,
 			kittyTextSizingWidth = kittyTextSizingWidth,
 			kittyUnderline = kittyUnderlines,
+			mouseEvents = mouseEvents,
 			synchronizedOutput = synchronizedOutput,
 			themeEvents = themeEvents,
 		),

@@ -4,6 +4,7 @@ import com.jakewharton.mosaic.TextCanvas
 import com.jakewharton.mosaic.TextSurface
 import com.jakewharton.mosaic.layout.Placeable.PlacementScope
 import com.jakewharton.mosaic.modifier.Modifier
+import com.jakewharton.mosaic.terminal.MouseEvent
 import com.jakewharton.mosaic.ui.unit.Constraints
 
 internal fun interface DebugPolicy {
@@ -57,6 +58,17 @@ internal abstract class MosaicNodeLayer :
 
 	open fun sendKeyEvent(keyEvent: KeyEvent): Boolean {
 		return next?.sendKeyEvent(keyEvent) ?: false
+	}
+
+	/**
+	 * Dispatch a [MouseEvent] through this layer. Coordinates in [event] are absolute (terminal
+	 * column / row, zero-based). The default implementation passes the event to [next] without
+	 * translation; [MouseLayer] intercepts before/after recursion and translates to node-local
+	 * coordinates for the [MouseModifier] callbacks; [BottomLayer] hit-tests children and
+	 * recurses into the top-most that contains the cursor.
+	 */
+	open fun sendMouseEvent(event: MouseEvent): Boolean {
+		return next?.sendMouseEvent(event) ?: false
 	}
 
 	override fun minIntrinsicWidth(height: Int): Int {
@@ -113,6 +125,9 @@ internal class MosaicNode(
 			if (element is KeyModifier) {
 				nextLayer = KeyLayer(element, nextLayer)
 			}
+			if (element is MouseModifier) {
+				nextLayer = MouseLayer(element, nextLayer)
+			}
 			if (element is ParentDataModifier) {
 				parentData = element.modifyParentData(parentData)
 			}
@@ -147,6 +162,16 @@ internal class MosaicNode(
 
 	fun sendKeyEvent(keyEvent: KeyEvent): Boolean {
 		return topLayer.sendKeyEvent(keyEvent)
+	}
+
+	/**
+	 * Entry point for routing a [MouseEvent] from the runtime. [event] coordinates are absolute
+	 * (terminal cell row/column). The event traverses this node's layer chain — `MouseLayer`
+	 * pre-handlers fire on the way in, the bottom layer hit-tests children, and `MouseLayer`
+	 * post-handlers fire on the way back out.
+	 */
+	fun sendMouseEvent(event: MouseEvent): Boolean {
+		return topLayer.sendMouseEvent(event)
 	}
 
 	override fun minIntrinsicWidth(height: Int): Int {
@@ -190,6 +215,24 @@ private class BottomLayer(
 			if (child.sendKeyEvent(keyEvent)) {
 				return true
 			}
+		}
+		return false
+	}
+
+	override fun sendMouseEvent(event: MouseEvent): Boolean {
+		// Iterate children in reverse paint order so the top-most-painted (last drawn) gets
+		// first crack at the event. Each child is hit-tested against the event's absolute
+		// coordinates; we don't translate to local until we reach a [MouseLayer] — that lets
+		// the bounds check stay in a single coordinate space (Mosaic places children at
+		// absolute positions, accumulated through PlacementScope).
+		for (i in node.children.indices.reversed()) {
+			val child = node.children[i]
+			if (child.width == 0 || child.height == 0) continue
+			val left = child.x
+			val top = child.y
+			if (event.x !in left until left + child.width) continue
+			if (event.y !in top until top + child.height) continue
+			if (child.sendMouseEvent(event)) return true
 		}
 		return false
 	}
@@ -263,4 +306,32 @@ private class KeyLayer(
 	override fun sendKeyEvent(keyEvent: KeyEvent) = element.onPreKeyEvent(keyEvent) ||
 		next.sendKeyEvent(keyEvent) ||
 		element.onKeyEvent(keyEvent)
+}
+
+private class MouseLayer(
+	private val element: MouseModifier,
+	override val next: MosaicNodeLayer,
+) : MosaicNodeLayer() {
+	override fun sendMouseEvent(event: MouseEvent): Boolean {
+		// Translate to node-local coords for the modifier callbacks — the caller-facing API
+		// promises `(0, 0)` is the top-left of the modified composable. The downstream `next`
+		// chain still works in absolute coords so the BottomLayer's hit-test for grandchildren
+		// uses the same coordinate space their `x` / `y` were placed in.
+		val localEvent = if (event.x == 0 && event.y == 0 && x == 0 && y == 0) {
+			event
+		} else {
+			MouseEvent(
+				x = event.x - x,
+				y = event.y - y,
+				type = event.type,
+				button = event.button,
+				shift = event.shift,
+				alt = event.alt,
+				ctrl = event.ctrl,
+			)
+		}
+		return element.onPreMouseEvent(localEvent) ||
+			next.sendMouseEvent(event) ||
+			element.onMouseEvent(localEvent)
+	}
 }

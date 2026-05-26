@@ -19,6 +19,7 @@ import com.jakewharton.mosaic.NonInteractivePolicy.Exit
 import com.jakewharton.mosaic.layout.KeyEvent
 import com.jakewharton.mosaic.layout.MosaicNode
 import com.jakewharton.mosaic.terminal.KeyboardEvent
+import com.jakewharton.mosaic.terminal.MouseEvent
 import com.jakewharton.mosaic.terminal.Terminal
 import com.jakewharton.mosaic.ui.BoxMeasurePolicy
 import kotlin.concurrent.Volatile
@@ -283,15 +284,26 @@ internal class MosaicComposition(
 
 			do {
 				externalClock.withFrameNanos { nanos ->
-					// Drain any pending key events before triggering the frame.
+					// Drain any pending events (keyboard + mouse) before triggering the frame.
+					// Mouse events are routed through the node tree's hit-test path so
+					// composables can subscribe via Modifier.onMouseEvent.
 					while (true) {
-						val event = terminal.events.tryReceive().getOrNull() ?: break
-						if (event !is KeyboardEvent) continue
-						val keyEvent = event.toKeyEventOrNull() ?: continue
-						val keyHandled = rootNode.sendKeyEvent(keyEvent)
-						if (!keyHandled && keyEvent == ctrlC) {
-							job.cancel()
-							return@withFrameNanos
+						when (val event = terminal.events.tryReceive().getOrNull() ?: break) {
+							is KeyboardEvent -> {
+								val keyEvent = event.toKeyEventOrNull() ?: continue
+								val keyHandled = rootNode.sendKeyEvent(keyEvent)
+								if (!keyHandled && keyEvent == ctrlC) {
+									job.cancel()
+									return@withFrameNanos
+								}
+							}
+							is MouseEvent -> {
+								rootNode.sendMouseEvent(event)
+							}
+							else -> {
+								// Other event types (focus, theme, resize) are already handled
+								// upstream by their respective state collectors.
+							}
 						}
 					}
 

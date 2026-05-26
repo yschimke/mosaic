@@ -26,3 +26,12 @@ internal const val systemThemeDisable = "$CSI?${systemThemeMode}l"
 internal const val inBandResizeMode = 2048
 internal const val inBandResizeEnable = "$CSI?${inBandResizeMode}h"
 internal const val inBandResizeDisable = "$CSI?${inBandResizeMode}l"
+
+// Mouse: we enable two DEC modes together. 1003 = "any-event tracking" so we receive press,
+// release, drag, AND motion-without-button. 1006 = SGR encoding so coordinates aren't clamped
+// at 223 and the parser can decode `CSI < ... M/m` deterministically. We use 1006 as the
+// capability probe because terminals that recognise it almost always recognise 1003.
+internal const val mouseTrackingMode = 1003
+internal const val mouseSgrMode = 1006
+internal const val mouseEnable = "$CSI?${mouseTrackingMode}h$CSI?${mouseSgrMode}h"
+internal const val mouseDisable = "$CSI?${mouseSgrMode}l$CSI?${mouseTrackingMode}l"

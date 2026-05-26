@@ -165,6 +165,16 @@ public final class com/jakewharton/mosaic/layout/KeyModifierKt {
 	public static final fun onPreviewKeyEvent (Lcom/jakewharton/mosaic/modifier/Modifier;Lkotlin/jvm/functions/Function1;)Lcom/jakewharton/mosaic/modifier/Modifier;
 }
 
+public abstract interface class com/jakewharton/mosaic/layout/MouseModifier : com/jakewharton/mosaic/modifier/Modifier$Element {
+	public abstract fun onMouseEvent (Lcom/jakewharton/mosaic/terminal/MouseEvent;)Z
+	public abstract fun onPreMouseEvent (Lcom/jakewharton/mosaic/terminal/MouseEvent;)Z
+}
+
+public final class com/jakewharton/mosaic/layout/MouseModifierKt {
+	public static final fun onMouseEvent (Lcom/jakewharton/mosaic/modifier/Modifier;Lkotlin/jvm/functions/Function1;)Lcom/jakewharton/mosaic/modifier/Modifier;
+	public static final fun onPreviewMouseEvent (Lcom/jakewharton/mosaic/modifier/Modifier;Lkotlin/jvm/functions/Function1;)Lcom/jakewharton/mosaic/modifier/Modifier;
+}
+
 public final class com/jakewharton/mosaic/layout/LayoutIdKt {
 	public static final fun getLayoutId (Lcom/jakewharton/mosaic/layout/Measurable;)Ljava/lang/Object;
 	public static final fun layoutId (Lcom/jakewharton/mosaic/modifier/Modifier;Ljava/lang/Object;)Lcom/jakewharton/mosaic/modifier/Modifier;
