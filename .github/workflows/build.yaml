@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - 'trunk'
+      - 'compose-ai-tools'
     tags-ignore:
       - '**'
 

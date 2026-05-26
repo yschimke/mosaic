@@ -615,6 +615,23 @@ public final class com/jakewharton/mosaic/ui/SpacerKt {
 	public static final fun Spacer (Lcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
 }
 
+public final class com/jakewharton/mosaic/ui/Bitmap {
+	public static final field Companion Lcom/jakewharton/mosaic/ui/Bitmap$Companion;
+	public fun <init> (II[I)V
+	public final fun get (II)I
+	public final fun getHeight ()I
+	public final fun getPixels ()[I
+	public final fun getWidth ()I
+}
+
+public final class com/jakewharton/mosaic/ui/Bitmap$Companion {
+	public final fun fromRows (ILjava/util/List;)Lcom/jakewharton/mosaic/ui/Bitmap;
+}
+
+public final class com/jakewharton/mosaic/ui/Image {
+	public static final fun Image (Lcom/jakewharton/mosaic/ui/Bitmap;Lcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/jakewharton/mosaic/ui/RawText {
 	public static final fun RawText (Ljava/lang/String;ILcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
 	public static final fun RawText (Ljava/util/List;ILcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V

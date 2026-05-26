@@ -395,6 +395,23 @@ final class com.jakewharton.mosaic.ui/BiasAlignment : com.jakewharton.mosaic.ui/
     }
 }
 
+final class com.jakewharton.mosaic.ui/Bitmap { // com.jakewharton.mosaic.ui/Bitmap|null[0]
+    constructor <init>(kotlin/Int, kotlin/Int, kotlin/IntArray) // com.jakewharton.mosaic.ui/Bitmap.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.IntArray){}[0]
+
+    final val height // com.jakewharton.mosaic.ui/Bitmap.height|{}height[0]
+        final fun <get-height>(): kotlin/Int // com.jakewharton.mosaic.ui/Bitmap.height.<get-height>|<get-height>(){}[0]
+    final val pixels // com.jakewharton.mosaic.ui/Bitmap.pixels|{}pixels[0]
+        final fun <get-pixels>(): kotlin/IntArray // com.jakewharton.mosaic.ui/Bitmap.pixels.<get-pixels>|<get-pixels>(){}[0]
+    final val width // com.jakewharton.mosaic.ui/Bitmap.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.jakewharton.mosaic.ui/Bitmap.width.<get-width>|<get-width>(){}[0]
+
+    final fun get(kotlin/Int, kotlin/Int): kotlin/Int // com.jakewharton.mosaic.ui/Bitmap.get|get(kotlin.Int;kotlin.Int){}[0]
+
+    final object Companion { // com.jakewharton.mosaic.ui/Bitmap.Companion|null[0]
+        final fun fromRows(kotlin/Int, kotlin.collections/List<kotlin/IntArray>): com.jakewharton.mosaic.ui/Bitmap // com.jakewharton.mosaic.ui/Bitmap.Companion.fromRows|fromRows(kotlin.Int;kotlin.collections.List<kotlin.IntArray>){}[0]
+    }
+}
+
 final class com.jakewharton.mosaic/StaticLogger { // com.jakewharton.mosaic/StaticLogger|null[0]
     final fun log(com.jakewharton.mosaic/TextCanvas) // com.jakewharton.mosaic/StaticLogger.log|log(com.jakewharton.mosaic.TextCanvas){}[0]
     final fun log(kotlin/String) // com.jakewharton.mosaic/StaticLogger.log|log(kotlin.String){}[0]
@@ -785,6 +802,7 @@ final fun com.jakewharton.mosaic.ui/Filler(kotlin/Char, com.jakewharton.mosaic.m
 final fun com.jakewharton.mosaic.ui/Filler(kotlin/Char, com.jakewharton.mosaic.modifier/Modifier?, com.jakewharton.mosaic.ui/Color?, com.jakewharton.mosaic.ui/Color?, com.jakewharton.mosaic.ui/TextStyle?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.jakewharton.mosaic.ui/Filler|Filler(kotlin.Char;com.jakewharton.mosaic.modifier.Modifier?;com.jakewharton.mosaic.ui.Color?;com.jakewharton.mosaic.ui.Color?;com.jakewharton.mosaic.ui.TextStyle?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
 final fun com.jakewharton.mosaic.ui/Filler(kotlin/Int, com.jakewharton.mosaic.modifier/Modifier?, com.jakewharton.mosaic.ui/Color, com.jakewharton.mosaic.ui/Color, com.jakewharton.mosaic.ui/TextStyle, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.jakewharton.mosaic.ui/Filler|Filler(kotlin.Int;com.jakewharton.mosaic.modifier.Modifier?;com.jakewharton.mosaic.ui.Color;com.jakewharton.mosaic.ui.Color;com.jakewharton.mosaic.ui.TextStyle;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
 final fun com.jakewharton.mosaic.ui/Filler(kotlin/Int, com.jakewharton.mosaic.modifier/Modifier?, com.jakewharton.mosaic.ui/Color?, com.jakewharton.mosaic.ui/Color?, com.jakewharton.mosaic.ui/TextStyle?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.jakewharton.mosaic.ui/Filler|Filler(kotlin.Int;com.jakewharton.mosaic.modifier.Modifier?;com.jakewharton.mosaic.ui.Color?;com.jakewharton.mosaic.ui.Color?;com.jakewharton.mosaic.ui.TextStyle?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.jakewharton.mosaic.ui/Image(com.jakewharton.mosaic.ui/Bitmap, com.jakewharton.mosaic.modifier/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.jakewharton.mosaic.ui/Image|Image(com.jakewharton.mosaic.ui.Bitmap;com.jakewharton.mosaic.modifier.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
 final fun com.jakewharton.mosaic.ui/Layout(kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, com.jakewharton.mosaic.modifier/Modifier?, kotlin/Function0<kotlin/String>?, com.jakewharton.mosaic.layout/MeasurePolicy, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.jakewharton.mosaic.ui/Layout|Layout(kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;com.jakewharton.mosaic.modifier.Modifier?;kotlin.Function0<kotlin.String>?;com.jakewharton.mosaic.layout.MeasurePolicy;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
 final fun com.jakewharton.mosaic.ui/RawText(kotlin.collections/List<kotlin/String>, kotlin/Int, com.jakewharton.mosaic.modifier/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.jakewharton.mosaic.ui/RawText|RawText(kotlin.collections.List<kotlin.String>;kotlin.Int;com.jakewharton.mosaic.modifier.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
 final fun com.jakewharton.mosaic.ui/RawText(kotlin/String, kotlin/Int, com.jakewharton.mosaic.modifier/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // com.jakewharton.mosaic.ui/RawText|RawText(kotlin.String;kotlin.Int;com.jakewharton.mosaic.modifier.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]

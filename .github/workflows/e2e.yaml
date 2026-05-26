@@ -1,0 +1,101 @@
+name: e2e
+
+# End-to-end harness for the `RawText` fork: launches the `:samples:rawimage` demo inside real
+# kitty and ghostty terminal emulators hosted on Xvnc, then screenshots them. Only runs on the
+# compose-ai-tools branch (the fork track) — the upstream `trunk` doesn't need this until the
+# feature is upstreamed.
+
+on:
+  push:
+    branches:
+      - 'compose-ai-tools'
+  pull_request:
+    branches:
+      - 'compose-ai-tools'
+  workflow_dispatch: {}
+
+env:
+  GRADLE_OPTS: "-Dkotlin.incremental=false -Dorg.gradle.logging.stacktrace=full"
+  DEBIAN_FRONTEND: noninteractive
+
+jobs:
+  e2e:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version-file: .github/workflows/.java-version
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      # Core harness binaries. Xvnc ships in `tigervnc-standalone-server`; `import` lives in
+      # `imagemagick` on noble (the `imagemagick-7` transition is incomplete as of 24.04 but
+      # the metapackage still installs the v6 binary).
+      - name: Install Xvnc, kitty, xdotool, imagemagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            tigervnc-standalone-server \
+            kitty \
+            xdotool \
+            imagemagick \
+            ca-certificates \
+            curl
+
+      # Ghostty: not in apt on noble. Use the upstream-published .deb from the GitHub release.
+      # If the install fails for any reason (release URL changes, network blip, deps), we let
+      # the step continue — the JUnit test will gracefully `assumeTrue` past ghostty and run
+      # kitty-only, so coverage degrades to single-terminal but the job still passes.
+      - name: Install ghostty (best effort)
+        continue-on-error: true
+        run: |
+          set -e
+          tmp=$(mktemp -d)
+          # The release asset name matches `ghostty_<version>_amd64.deb`. We pick the latest
+          # via the GitHub API to avoid pinning to a stale version.
+          api_url='https://api.github.com/repos/ghostty-org/ghostty/releases/latest'
+          asset_url=$(curl -fsSL "$api_url" \
+            | grep -Eo 'https://[^"]+_amd64\.deb' \
+            | head -n1 || true)
+          if [ -z "$asset_url" ]; then
+            echo "Could not resolve ghostty .deb URL — skipping (test will run kitty-only)"
+            exit 0
+          fi
+          echo "Downloading $asset_url"
+          curl -fsSL -o "$tmp/ghostty.deb" "$asset_url"
+          sudo apt-get install -y "$tmp/ghostty.deb"
+          ghostty --version || true
+
+      - name: Probe harness binary availability
+        run: ./gradlew :mosaic-e2e:checkE2EBinaries
+
+      # Build the sample binary the harness drives. We use the JVM target to keep CI fast and
+      # avoid the LLVM toolchain dance the native targets require.
+      - name: Build :samples:rawimage JVM dist
+        run: ./gradlew :samples:rawimage:installJvmDist
+
+      - name: Run E2E harness
+        run: ./gradlew :mosaic-e2e:test
+
+      # Always upload screenshots — even on failure they're the most direct diagnostic. If the
+      # test passes, they're the deliverable artifact.
+      - name: Upload screenshots
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-screenshots
+          path: mosaic-e2e/build/e2e-screenshots/
+          if-no-files-found: warn
+
+      - name: Upload test reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-test-reports
+          path: mosaic-e2e/build/reports/tests/
+          if-no-files-found: warn
