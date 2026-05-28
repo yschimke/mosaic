@@ -1,0 +1,78 @@
+name: snapshot
+
+# Publish a -SNAPSHOT build to the Maven Central snapshots repo
+# (https://central.sonatype.com/repository/maven-snapshots/) on every push
+# to the compose-ai-tools branch. The vanniktech publish plugin routes
+# `-SNAPSHOT` versions to that URL automatically; snapshots are unsigned.
+
+on:
+  push:
+    branches:
+      - 'compose-ai-tools'
+  workflow_dispatch:
+    inputs:
+      suffix:
+        description: >-
+          Optional version suffix inserted before -SNAPSHOT. Leave blank to
+          publish the plain VERSION_NAME from gradle.properties.
+        required: false
+        type: string
+
+concurrency:
+  group: snapshot-${{ github.ref }}-${{ inputs.suffix || 'auto' }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  GRADLE_OPTS: "-Dkotlin.incremental=false -Dorg.gradle.logging.stacktrace=full"
+
+jobs:
+  publish-snapshot:
+    if: ${{ github.repository == 'yschimke/mosaic' }}
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version-file: .github/workflows/.java-version
+      - uses: gradle/actions/setup-gradle@v6
+
+      - id: version
+        name: Compute snapshot version
+        env:
+          INPUT_SUFFIX: ${{ inputs.suffix || '' }}
+        run: |
+          base="$(grep '^VERSION_NAME=' gradle.properties | cut -d= -f2)"
+          base="${base%-SNAPSHOT}"
+
+          suffix="$INPUT_SUFFIX"
+          if [[ -n "$suffix" ]]; then
+            suffix="$(
+              printf '%s' "$suffix" |
+                tr '[:upper:]' '[:lower:]' |
+                sed -E 's/[^a-z0-9.-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g'
+            )"
+            if [[ -z "$suffix" ]]; then
+              echo "Snapshot suffix resolved to empty after sanitization." >&2
+              exit 1
+            fi
+            version="${base}-${suffix}-SNAPSHOT"
+          else
+            version="${base}-SNAPSHOT"
+          fi
+
+          echo "Snapshot version: $version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "### Maven snapshot" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`$version\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish -SNAPSHOT to Maven Central snapshots
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        run: ./gradlew -PVERSION_NAME=${{ steps.version.outputs.version }} publish
