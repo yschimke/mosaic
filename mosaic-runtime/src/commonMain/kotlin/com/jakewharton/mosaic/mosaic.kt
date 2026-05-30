@@ -66,6 +66,38 @@ public suspend fun runMosaic(
 	runMosaicComposition(terminal, rendering, content)
 }
 
+/**
+ * Compose [content] a single time and return the rendered frame as an ANSI string.
+ *
+ * Unlike [runMosaic], this binds no TTY and runs no render loop: it composes, measures, places,
+ * and draws exactly one frame, then returns. There is no event input and no recomposition — state
+ * changes and [androidx.compose.runtime.LaunchedEffect]-driven updates that would land on a later
+ * frame are not observed. This makes it the right tool for snapshot tests and one-shot CLI output
+ * (e.g. piping a single frame to a file).
+ *
+ * The frame is rendered at [com.jakewharton.mosaic.terminal.AnsiLevel.TRUECOLOR] with synchronized
+ * output disabled, so the result is a clean, self-contained string. Composables that pick their
+ * own behavior from the environment (such as [com.jakewharton.mosaic.ui.Image], whose render tier
+ * comes from `detectImageRenderMode()`) are unaffected — they see the same environment they always
+ * do.
+ */
+public fun renderMosaic(content: @Composable () -> Unit): String {
+	val clock = BroadcastFrameClock()
+	return runBlocking(clock) {
+		val terminal = OneShotTerminal
+		val mosaicComposition = MosaicComposition(
+			coroutineContext = coroutineContext,
+			onDraw = {},
+			terminal = terminal,
+		)
+		mosaicComposition.setContent(content)
+		val rendering = AnsiRendering(terminal.capabilities)
+		val output = rendering.render(mosaicComposition).toString()
+		mosaicComposition.cancel()
+		output
+	}
+}
+
 internal suspend fun runMosaicComposition(
 	terminal: Terminal,
 	rendering: Rendering,
