@@ -89,4 +89,18 @@ internal object NonInteractiveTerminal : Terminal, Terminal.State, Terminal.Capa
 	override fun close() {}
 }
 
+/**
+ * A headless terminal for one-shot composition (see [renderMosaic]). Identical to
+ * [NonInteractiveTerminal] except it advertises [AnsiLevel.TRUECOLOR] so a captured frame keeps
+ * its color. Every interactive capability — including synchronized output — stays off: a one-shot
+ * render has no terminal to negotiate with, and the sync-output wrappers would just be noise in
+ * the returned string.
+ */
+internal object OneShotTerminal :
+	Terminal by NonInteractiveTerminal,
+	Terminal.Capabilities by NonInteractiveTerminal {
+	override val capabilities: Terminal.Capabilities get() = this
+	override val ansiLevel: AnsiLevel get() = AnsiLevel.TRUECOLOR
+}
+
 internal const val NonInteractiveMessage = "Unable to run in non-interactive mode."
