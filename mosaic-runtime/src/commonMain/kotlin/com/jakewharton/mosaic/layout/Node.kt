@@ -220,18 +220,17 @@ private class BottomLayer(
 	}
 
 	override fun sendMouseEvent(event: MouseEvent): Boolean {
-		// Iterate children in reverse paint order so the top-most-painted (last drawn) gets
-		// first crack at the event. Each child is hit-tested against the event's absolute
-		// coordinates; we don't translate to local until we reach a [MouseLayer] — that lets
-		// the bounds check stay in a single coordinate space (Mosaic places children at
-		// absolute positions, accumulated through PlacementScope).
+		// Dispatch to children in reverse paint order so the top-most-painted (last drawn) gets
+		// first crack at the event. We deliberately do not gate on the child's bounds here: a
+		// child's own [MouseLayer] hit-tests in node-local space using its absolute placed
+		// position, which already accounts for any repositioning applied by layout modifiers
+		// (e.g. [Modifier.offset]). Gating on the child's outer layout slot — which an offset
+		// leaves at the unshifted origin — would miss a child whose content was moved away from
+		// it. A child not under the cursor reports no hit and returns false, so reverse-order
+		// dispatch still resolves overlaps correctly.
 		for (i in node.children.indices.reversed()) {
 			val child = node.children[i]
 			if (child.width == 0 || child.height == 0) continue
-			val left = child.x
-			val top = child.y
-			if (event.x !in left until left + child.width) continue
-			if (event.y !in top until top + child.height) continue
 			if (child.sendMouseEvent(event)) return true
 		}
 		return false
@@ -314,15 +313,21 @@ private class MouseLayer(
 ) : MosaicNodeLayer() {
 	override fun sendMouseEvent(event: MouseEvent): Boolean {
 		// Translate to node-local coords for the modifier callbacks — the caller-facing API
-		// promises `(0, 0)` is the top-left of the modified composable. The downstream `next`
-		// chain still works in absolute coords so the BottomLayer's hit-test for grandchildren
-		// uses the same coordinate space their `x` / `y` were placed in.
-		val localEvent = if (event.x == 0 && event.y == 0 && x == 0 && y == 0) {
+		// promises `(0, 0)` is the top-left of the modified composable. This layer's `x` / `y`
+		// are its absolute placed position, so they already include any offset a layout modifier
+		// applied above us; the local point is therefore correct even for repositioned nodes.
+		val localX = event.x - x
+		val localY = event.y - y
+		// Authoritative hit-test: the handlers only see events while the cursor is over this
+		// node's bounds. The downstream `next` chain always receives the original absolute event
+		// so descendants hit-test in the same coordinate space their `x` / `y` were placed in.
+		val inBounds = localX in 0 until width && localY in 0 until height
+		val localEvent = if (localX == event.x && localY == event.y) {
 			event
 		} else {
 			MouseEvent(
-				x = event.x - x,
-				y = event.y - y,
+				x = localX,
+				y = localY,
 				type = event.type,
 				button = event.button,
 				shift = event.shift,
@@ -330,8 +335,8 @@ private class MouseLayer(
 				ctrl = event.ctrl,
 			)
 		}
-		return element.onPreMouseEvent(localEvent) ||
+		return (inBounds && element.onPreMouseEvent(localEvent)) ||
 			next.sendMouseEvent(event) ||
-			element.onMouseEvent(localEvent)
+			(inBounds && element.onMouseEvent(localEvent))
 	}
 }
