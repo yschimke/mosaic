@@ -166,16 +166,6 @@ public final class com/jakewharton/mosaic/layout/KeyModifierKt {
 	public static final fun onPreviewKeyEvent (Lcom/jakewharton/mosaic/modifier/Modifier;Lkotlin/jvm/functions/Function1;)Lcom/jakewharton/mosaic/modifier/Modifier;
 }
 
-public abstract interface class com/jakewharton/mosaic/layout/MouseModifier : com/jakewharton/mosaic/modifier/Modifier$Element {
-	public abstract fun onMouseEvent (Lcom/jakewharton/mosaic/terminal/MouseEvent;)Z
-	public abstract fun onPreMouseEvent (Lcom/jakewharton/mosaic/terminal/MouseEvent;)Z
-}
-
-public final class com/jakewharton/mosaic/layout/MouseModifierKt {
-	public static final fun onMouseEvent (Lcom/jakewharton/mosaic/modifier/Modifier;Lkotlin/jvm/functions/Function1;)Lcom/jakewharton/mosaic/modifier/Modifier;
-	public static final fun onPreviewMouseEvent (Lcom/jakewharton/mosaic/modifier/Modifier;Lkotlin/jvm/functions/Function1;)Lcom/jakewharton/mosaic/modifier/Modifier;
-}
-
 public final class com/jakewharton/mosaic/layout/LayoutIdKt {
 	public static final fun getLayoutId (Lcom/jakewharton/mosaic/layout/Measurable;)Ljava/lang/Object;
 	public static final fun layoutId (Lcom/jakewharton/mosaic/modifier/Modifier;Ljava/lang/Object;)Lcom/jakewharton/mosaic/modifier/Modifier;
@@ -214,6 +204,16 @@ public abstract interface class com/jakewharton/mosaic/layout/MeasureResult {
 
 public abstract interface class com/jakewharton/mosaic/layout/MeasureScope {
 	public fun layout (IILkotlin/jvm/functions/Function1;)Lcom/jakewharton/mosaic/layout/MeasureResult;
+}
+
+public abstract interface class com/jakewharton/mosaic/layout/MouseModifier : com/jakewharton/mosaic/modifier/Modifier$Element {
+	public abstract fun onMouseEvent (Lcom/jakewharton/mosaic/terminal/MouseEvent;)Z
+	public abstract fun onPreMouseEvent (Lcom/jakewharton/mosaic/terminal/MouseEvent;)Z
+}
+
+public final class com/jakewharton/mosaic/layout/MouseModifierKt {
+	public static final fun onMouseEvent (Lcom/jakewharton/mosaic/modifier/Modifier;Lkotlin/jvm/functions/Function1;)Lcom/jakewharton/mosaic/modifier/Modifier;
+	public static final fun onPreviewMouseEvent (Lcom/jakewharton/mosaic/modifier/Modifier;Lkotlin/jvm/functions/Function1;)Lcom/jakewharton/mosaic/modifier/Modifier;
 }
 
 public final class com/jakewharton/mosaic/layout/OffsetKt {
@@ -488,6 +488,10 @@ public abstract interface class com/jakewharton/mosaic/ui/Arrangement$Vertical {
 	public fun getSpacing ()I
 }
 
+public final class com/jakewharton/mosaic/ui/BasicTextField {
+	public static final fun BasicTextField (Lcom/jakewharton/mosaic/ui/TextFieldValue;Lkotlin/jvm/functions/Function1;Lcom/jakewharton/mosaic/modifier/Modifier;ZLandroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/jakewharton/mosaic/ui/BiasAlignment : com/jakewharton/mosaic/ui/Alignment {
 	public static final field $stable I
 	public fun <init> (FF)V
@@ -517,6 +521,20 @@ public final class com/jakewharton/mosaic/ui/BiasAlignment$Vertical : com/jakewh
 	public final fun getBias ()F
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/jakewharton/mosaic/ui/Bitmap {
+	public static final field $stable I
+	public static final field Companion Lcom/jakewharton/mosaic/ui/Bitmap$Companion;
+	public fun <init> (II[I)V
+	public final fun get (II)I
+	public final fun getHeight ()I
+	public final fun getPixels ()[I
+	public final fun getWidth ()I
+}
+
+public final class com/jakewharton/mosaic/ui/Bitmap$Companion {
+	public final fun fromRows (ILjava/util/List;)Lcom/jakewharton/mosaic/ui/Bitmap;
 }
 
 public final class com/jakewharton/mosaic/ui/Box {
@@ -602,6 +620,20 @@ public final class com/jakewharton/mosaic/ui/FillerKt {
 	public static final fun Filler-GddN7rU (ILcom/jakewharton/mosaic/modifier/Modifier;IIILandroidx/compose/runtime/Composer;II)V
 }
 
+public final class com/jakewharton/mosaic/ui/Image {
+	public static final fun Image (Lcom/jakewharton/mosaic/ui/Bitmap;IILcom/jakewharton/mosaic/modifier/Modifier;Lcom/jakewharton/mosaic/ui/ImageRenderMode;Landroidx/compose/runtime/Composer;II)V
+	public static final fun detectImageRenderMode ()Lcom/jakewharton/mosaic/ui/ImageRenderMode;
+}
+
+public final class com/jakewharton/mosaic/ui/ImageRenderMode : java/lang/Enum {
+	public static final field Ascii Lcom/jakewharton/mosaic/ui/ImageRenderMode;
+	public static final field HalfBlock Lcom/jakewharton/mosaic/ui/ImageRenderMode;
+	public static final field KittyGraphics Lcom/jakewharton/mosaic/ui/ImageRenderMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/jakewharton/mosaic/ui/ImageRenderMode;
+	public static fun values ()[Lcom/jakewharton/mosaic/ui/ImageRenderMode;
+}
+
 public final class com/jakewharton/mosaic/ui/Layout {
 	public static final fun Layout (Lkotlin/jvm/functions/Function2;Lcom/jakewharton/mosaic/modifier/Modifier;Lkotlin/jvm/functions/Function0;Lcom/jakewharton/mosaic/layout/MeasurePolicy;Landroidx/compose/runtime/Composer;II)V
 }
@@ -610,6 +642,11 @@ public abstract interface annotation class com/jakewharton/mosaic/ui/LayoutScope
 }
 
 public abstract interface annotation class com/jakewharton/mosaic/ui/MosaicComposable : java/lang/annotation/Annotation {
+}
+
+public final class com/jakewharton/mosaic/ui/RawText {
+	public static final fun RawText (Ljava/lang/String;ILcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
+	public static final fun RawText (Ljava/util/List;ILcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/jakewharton/mosaic/ui/Row {
@@ -626,48 +663,13 @@ public final class com/jakewharton/mosaic/ui/SpacerKt {
 	public static final fun Spacer (Lcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
 }
 
-public final class com/jakewharton/mosaic/ui/Bitmap {
-	public static final field Companion Lcom/jakewharton/mosaic/ui/Bitmap$Companion;
-	public fun <init> (II[I)V
-	public final fun get (II)I
-	public final fun getHeight ()I
-	public final fun getPixels ()[I
-	public final fun getWidth ()I
-}
-
-public final class com/jakewharton/mosaic/ui/Bitmap$Companion {
-	public final fun fromRows (ILjava/util/List;)Lcom/jakewharton/mosaic/ui/Bitmap;
-}
-
-public final class com/jakewharton/mosaic/ui/Image {
-	public static final fun Image (Lcom/jakewharton/mosaic/ui/Bitmap;IILcom/jakewharton/mosaic/modifier/Modifier;Lcom/jakewharton/mosaic/ui/ImageRenderMode;Landroidx/compose/runtime/Composer;II)V
-	public static final fun detectImageRenderMode ()Lcom/jakewharton/mosaic/ui/ImageRenderMode;
-}
-
-public final class com/jakewharton/mosaic/ui/ImageRenderMode : java/lang/Enum {
-	public static final field Ascii Lcom/jakewharton/mosaic/ui/ImageRenderMode;
-	public static final field HalfBlock Lcom/jakewharton/mosaic/ui/ImageRenderMode;
-	public static final field KittyGraphics Lcom/jakewharton/mosaic/ui/ImageRenderMode;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/jakewharton/mosaic/ui/ImageRenderMode;
-	public static fun values ()[Lcom/jakewharton/mosaic/ui/ImageRenderMode;
-}
-
-public final class com/jakewharton/mosaic/ui/RawText {
-	public static final fun RawText (Ljava/lang/String;ILcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
-	public static final fun RawText (Ljava/util/List;ILcom/jakewharton/mosaic/modifier/Modifier;Landroidx/compose/runtime/Composer;II)V
-}
-
-public final class com/jakewharton/mosaic/ui/BasicTextField {
-	public static final fun BasicTextField (Lcom/jakewharton/mosaic/ui/TextFieldValue;Lkotlin/jvm/functions/Function1;Lcom/jakewharton/mosaic/modifier/Modifier;ZLandroidx/compose/runtime/Composer;II)V
-}
-
 public final class com/jakewharton/mosaic/ui/Text {
 	public static final fun Text-cbmis8g (Lcom/jakewharton/mosaic/text/AnnotatedString;Lcom/jakewharton/mosaic/modifier/Modifier;IIIIILandroidx/compose/runtime/Composer;II)V
 	public static final fun Text-cbmis8g (Ljava/lang/String;Lcom/jakewharton/mosaic/modifier/Modifier;IIIIILandroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/jakewharton/mosaic/ui/TextFieldValue {
+	public static final field $stable I
 	public fun <init> (Ljava/lang/String;I)V
 	public synthetic fun <init> (Ljava/lang/String;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
